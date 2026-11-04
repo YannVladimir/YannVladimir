@@ -1,0 +1,23 @@
+name: CI
+
+on:
+  push:
+    branches: [main, docs-tests-ci]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Catch link rot (project repos renamed/deleted, portfolio domain down)
+    # even when nothing's been pushed in a while.
+    - cron: "0 6 1 * *"
+
+jobs:
+  check-links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check links in README
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: --verbose --no-progress README.md
+          fail: true
